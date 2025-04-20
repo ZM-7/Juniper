@@ -1,0 +1,3 @@
+[submodule "Juniper/vendor/spdlog"]
+	path = Juniper/vendor/spdlog
+	url = https://github.com/gabime/spdlog

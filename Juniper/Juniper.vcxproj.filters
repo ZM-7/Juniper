@@ -27,9 +27,15 @@
     <ClInclude Include="src\Juniper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Juniper\Log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Juniper\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Juniper\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
