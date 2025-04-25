@@ -4,6 +4,7 @@
 
 #include "Core.h"
 #include "spdlog/spdlog.h"
+#include "spdlog/fmt/ostr.h"
 
 namespace Juniper {
 	class JUNIPER_API Log
