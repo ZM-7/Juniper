@@ -2,8 +2,6 @@
 
 #include "Event.h"
 
-#include <sstream>
-
 namespace Juniper {
 
 	class JUNIPER_API WindowResizeEvent : public Event

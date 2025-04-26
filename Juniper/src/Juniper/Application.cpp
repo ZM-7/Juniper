@@ -1,7 +1,8 @@
+#include "jppch.h"
 #include "Application.h"
 
-#include "Events/ApplicationEvent.h"
-#include "Log.h"
+#include "Juniper/Events/ApplicationEvent.h"
+#include "Juniper/Log.h"
 
 namespace Juniper {
 

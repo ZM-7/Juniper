@@ -1,9 +1,7 @@
 #pragma once
 
-#include "../Core.h"
-
-#include <string>
-#include <functional>
+#include "jppch.h"
+#include "Juniper/Core.h" 
 
 namespace Juniper {
 
