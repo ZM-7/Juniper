@@ -10,4 +10,12 @@
 #error Juniper only support Windows!
 #endif
 
+#ifdef JP_ENABLED_ASSERTS
+	#define JP_ASSERT(x, ...) { if(!(x)) { JP_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+	#define JP_ASSERT(x, ...) { if(!(x)) { JP_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+#else
+	#define JP_ASSERT(x, ...)
+	#define JP_CORE_ASSERT(x, ...)
+#endif
+
 #define BIT(x) (1 << x)

@@ -12,6 +12,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "Juniper/Log.h"
+
 #ifdef JP_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif

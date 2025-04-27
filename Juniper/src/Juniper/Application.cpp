@@ -4,10 +4,13 @@
 #include "Juniper/Events/ApplicationEvent.h"
 #include "Juniper/Log.h"
 
+#include <GLFW/glfw3.h>
+
 namespace Juniper {
 
 	Application::Application()
 	{
+		m_Window = std::unique_ptr<Window>(Window::Create());
 	}
 
 
@@ -17,16 +20,11 @@ namespace Juniper {
 
 	void Application::Run()
 	{
-		WindowResizeEvent e(1280, 720);
-		if (e.IsInCategory(EventCategoryApplication))
+		while (m_Running)
 		{
-			JP_TRACE("{}",e.ToString());
+			glClearColor(1, 0, 1, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
+			m_Window->OnUpdate();
 		}
-		if (e.IsInCategory(EventCategoryInput))
-		{
-			JP_TRACE("{}", e.ToString());
-		}
-
-		while (true);
 	}
 }
