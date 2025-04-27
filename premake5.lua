@@ -10,6 +10,12 @@ workspace "Juniper"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- Include directories relative to root folder (solution directory)
+IncludeDir = {}
+IncludeDir["GLFW"] = "Juniper/vendor/GLFW/include"
+
+include "Juniper/vendor/GLFW"
+
 project "Juniper"
 	location "Juniper"
 	kind "SharedLib"
@@ -30,7 +36,14 @@ project "Juniper"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{IncludeDir.GLFW}"
+	}
+	
+	links
+	{
+		"GLFW",
+		"opengl32.lib"
 	}
 
 	buildoptions

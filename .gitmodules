@@ -1,3 +1,6 @@
 [submodule "Juniper/vendor/spdlog"]
 	path = Juniper/vendor/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "Juniper/vendor/GLFW"]
+	path = Juniper/vendor/GLFW
+	url = https://github.com/ZM-7/glfw
