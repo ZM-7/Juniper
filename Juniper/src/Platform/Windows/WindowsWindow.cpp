@@ -1,9 +1,18 @@
 #include "jppch.h"
 #include "WindowsWindow.h"
 
+#include "Juniper/Events/ApplicationEvent.h"
+#include "Juniper/Events/MouseEvent.h"
+#include "Juniper/Events/KeyEvent.h"
+
 namespace Juniper {
 
 	static bool s_GLFWInitialized = false;
+
+	static void GLFWErrorCallback(int error, const char* description)
+	{
+		JP_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
+	}
 
 	Window* Window::Create(const WindowProps& props)
 	{
@@ -26,14 +35,14 @@ namespace Juniper {
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
 
-		JP_CORE_INFO("Creating {0} ({1}, {2})", props.Title, props.Width, props.Height);
+		JP_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
 		if (!s_GLFWInitialized)
 		{
 			//TODO: glfwTerminate on system shutdow
 			int success = glfwInit();
 			JP_CORE_ASSERT(success, "Could not initialize GLFW!");
-
+			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}
 
@@ -41,6 +50,24 @@ namespace Juniper {
 		glfwMakeContextCurrent(m_Window);
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
+		
+		// Set GLFW callback
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				data.Width = width;
+				data.Height = height;
+
+				WindowResizeEvent event(width, height);
+				data.EventCallback(event);
+			});
+
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) 
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				WindowCloseEvent event;
+				data.EventCallback(event);
+			});
 	}
 
 	void WindowsWindow::Shutdown()
