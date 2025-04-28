@@ -23,6 +23,7 @@ namespace Juniper {
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+		dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(OnKeyPress));
 
 		JP_CORE_TRACE(e.ToString());
 	}
@@ -40,6 +41,11 @@ namespace Juniper {
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		m_Running = false;
+		return true;
+	}
+
+	bool Application::OnKeyPress(KeyPressedEvent& e)
+	{
 		return true;
 	}
 }
