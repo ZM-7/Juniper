@@ -5,6 +5,8 @@
 #include "Juniper/Events/MouseEvent.h"
 #include "Juniper/Events/KeyEvent.h"
 
+#include <glad/glad.h>
+
 namespace Juniper {
 
 	static bool s_GLFWInitialized = false;
@@ -48,6 +50,8 @@ namespace Juniper {
 
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		JP_CORE_ASSERT(status, "Failed to initialize GLAD!");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 		

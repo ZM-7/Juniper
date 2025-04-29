@@ -13,8 +13,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Juniper/vendor/GLFW/include"
+IncludeDir["Glad"] = "Juniper/vendor/Glad/include"
 
 include "Juniper/vendor/GLFW"
+include "Juniper/vendor/Glad"
 
 project "Juniper"
 	location "Juniper"
@@ -37,12 +39,14 @@ project "Juniper"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}"
 	}
 	
 	links
 	{
 		"GLFW",
+		"Glad",
 		"opengl32.lib"
 	}
 
@@ -59,7 +63,8 @@ project "Juniper"
 		defines
 		{
 			"JP_PLATFORM_WINDOWS",
-			"JP_BUILD_DLL"
+			"JP_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands
