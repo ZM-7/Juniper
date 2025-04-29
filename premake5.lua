@@ -71,14 +71,17 @@ project "Juniper"
 
 	filter "configurations:Debug"
 		defines "JP_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "JP_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "JP_DIST"
+		buildoptions "/MDd"
 		optimize "On"
 
 project "Sandbox"
@@ -123,12 +126,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "JP_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "JP_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "JP_DIST"
+		buildoptions "/MD"
 		optimize "On"
