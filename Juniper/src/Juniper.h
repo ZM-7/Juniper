@@ -3,6 +3,7 @@
 // For use by Juniper applications
 
 #include "Juniper/Application.h"
+#include "Juniper/Layer.h"
 #include "Juniper/Log.h"
 
 
