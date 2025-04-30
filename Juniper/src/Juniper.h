@@ -6,6 +6,7 @@
 #include "Juniper/Layer.h"
 #include "Juniper/Log.h"
 
+#include "Juniper/ImGui/ImGuiLayer.h"
 
 // ---Entry Point-------------------
 #include "Juniper/EntryPoint.h"
