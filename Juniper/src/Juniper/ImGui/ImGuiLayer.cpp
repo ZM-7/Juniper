@@ -1,12 +1,15 @@
 #include "jppch.h"
 #include "ImGuiLayer.h"
 
-#include "imgui.h"
+
 #include "Platform/OpenGL/ImGuiOpenGLRenderer.h"
-#include "GLFW/glfw3.h"
+#include "imgui.h"
+#include "Juniper/ImGui/ImGuiGLFWConv.h"
 
 #include "Juniper/Application.h"
 
+#include "GLFW/glfw3.h"
+#include "glad/glad.h"
 namespace Juniper {
 
 	ImGuiLayer::ImGuiLayer()
@@ -23,33 +26,9 @@ namespace Juniper {
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
 
-		
 		ImGuiIO& io = ImGui::GetIO();
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
-
-		// TEMPORARY: should eventually use Juniper key codes
-		io.AddKeyEvent(ImGuiKey_Tab, ImGuiKey(GLFW_KEY_TAB));
-		io.AddKeyEvent(ImGuiKey_LeftArrow, ImGuiKey(GLFW_KEY_LEFT));
-		io.AddKeyEvent(ImGuiKey_RightArrow, ImGuiKey(GLFW_KEY_RIGHT));
-		io.AddKeyEvent(ImGuiKey_UpArrow, ImGuiKey(GLFW_KEY_UP));
-		io.AddKeyEvent(ImGuiKey_DownArrow, ImGuiKey(GLFW_KEY_DOWN));
-		io.AddKeyEvent(ImGuiKey_PageUp, ImGuiKey(GLFW_KEY_PAGE_UP));
-		io.AddKeyEvent(ImGuiKey_PageDown, ImGuiKey(GLFW_KEY_PAGE_DOWN));
-		io.AddKeyEvent(ImGuiKey_Home, ImGuiKey(GLFW_KEY_HOME));
-		io.AddKeyEvent(ImGuiKey_End, ImGuiKey(GLFW_KEY_END));
-		io.AddKeyEvent(ImGuiKey_Insert , ImGuiKey(GLFW_KEY_INSERT));
-		io.AddKeyEvent(ImGuiKey_Delete , ImGuiKey(GLFW_KEY_DELETE));
-		io.AddKeyEvent(ImGuiKey_Backspace, ImGuiKey(GLFW_KEY_BACKSPACE));
-		io.AddKeyEvent(ImGuiKey_Space, ImGuiKey(GLFW_KEY_SPACE));
-		io.AddKeyEvent(ImGuiKey_Enter, ImGuiKey(GLFW_KEY_ENTER));
-		io.AddKeyEvent(ImGuiKey_Escape, ImGuiKey(GLFW_KEY_ESCAPE));
-		io.AddKeyEvent(ImGuiKey_A, ImGuiKey(GLFW_KEY_A));
-		io.AddKeyEvent(ImGuiKey_C, ImGuiKey(GLFW_KEY_C));
-		io.AddKeyEvent(ImGuiKey_V, ImGuiKey(GLFW_KEY_V));
-		io.AddKeyEvent(ImGuiKey_X, ImGuiKey(GLFW_KEY_X));
-		io.AddKeyEvent(ImGuiKey_Y, ImGuiKey(GLFW_KEY_Y));
-		io.AddKeyEvent(ImGuiKey_Z, ImGuiKey(GLFW_KEY_Z));
 
 		ImGui_ImplOpenGL3_Init("#version 410");
 
@@ -81,6 +60,88 @@ namespace Juniper {
 
 	void ImGuiLayer::OnEvent(Event& event)
 	{
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<MouseButtonPressedEvent>(JP_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonPressedEvent));
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(JP_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonReleasedEvent));
+		dispatcher.Dispatch<MouseMovedEvent>(JP_BIND_EVENT_FN(ImGuiLayer::OnMouseMovedEvent));
+		dispatcher.Dispatch<MouseScrolledEvent>(JP_BIND_EVENT_FN(ImGuiLayer::OnMouseScrolledEvent));
+		dispatcher.Dispatch<KeyPressedEvent>(JP_BIND_EVENT_FN(ImGuiLayer::OnKeyPressedEvent));
+		dispatcher.Dispatch<KeyTypedEvent>(JP_BIND_EVENT_FN(ImGuiLayer::OnKeyTypedEvent));
+		dispatcher.Dispatch<KeyReleasedEvent>(JP_BIND_EVENT_FN(ImGuiLayer::OnKeyReleasedEvent));
+		dispatcher.Dispatch<WindowResizeEvent>(JP_BIND_EVENT_FN(ImGuiLayer::OnWindowResizeEvent));
 	}
 
+	bool ImGuiLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.MouseDown[e.GetMouseButton()] = true;
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.MouseDown[e.GetMouseButton()] = false;
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnMouseMovedEvent(MouseMovedEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.MousePos = ImVec2(e.GetX(), e.GetY());
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnMouseScrolledEvent(MouseScrolledEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.MouseWheelH += e.GetXOffset();
+		io.MouseWheel += e.GetYOffset();
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnKeyPressedEvent(KeyPressedEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.AddKeyEvent(ImGui_ImplGlfw_KeyToImGuiKey(e.GetKeyCode()), e.GetKeyCode());
+
+		io.KeyCtrl = GLFW_KEY_RIGHT_CONTROL || GLFW_KEY_LEFT_CONTROL;
+		io.KeyAlt = GLFW_KEY_RIGHT_ALT || GLFW_KEY_LEFT_ALT;
+		io.KeyShift = GLFW_KEY_RIGHT_SHIFT || GLFW_KEY_LEFT_SHIFT;
+		io.KeySuper = GLFW_KEY_RIGHT_SUPER || GLFW_KEY_LEFT_SUPER;
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnKeyReleasedEvent(KeyReleasedEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.AddKeyEvent(ImGui_ImplGlfw_KeyToImGuiKey(e.GetKeyCode()), false);
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnKeyTypedEvent(KeyTypedEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		int keycode = e.GetKeyCode();
+		if (keycode > 0 && keycode < 0x10000)
+			io.AddInputCharacter((unsigned short)keycode);
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnWindowResizeEvent(WindowResizeEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.DisplaySize = ImVec2(e.GetWidth(), e.GetHeight());
+		io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+		glViewport(0, 0, e.GetWidth(), e.GetHeight());
+
+		return false;
+	}
 }
