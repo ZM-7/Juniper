@@ -16,9 +16,12 @@ IncludeDir["GLFW"] = "Juniper/vendor/GLFW/include"
 IncludeDir["Glad"] = "Juniper/vendor/Glad/include"
 IncludeDir["ImGui"] = "Juniper/vendor/imgui"
 
-include "Juniper/vendor/GLFW"
-include "Juniper/vendor/Glad"
-include "Juniper/vendor/imgui"
+group "Dependencies"
+	include "Juniper/vendor/GLFW"
+	include "Juniper/vendor/Glad"
+	include "Juniper/vendor/imgui"
+
+group ""
 
 project "Juniper"
 	location "Juniper"
